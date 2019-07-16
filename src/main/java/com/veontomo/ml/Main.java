@@ -1,8 +1,6 @@
 package com.veontomo.ml;
 
-import org.tensorflow.DataType;
 import org.tensorflow.Graph;
-import org.tensorflow.Operation;
 import org.tensorflow.Session;
 import org.tensorflow.Tensor;
 import org.tensorflow.TensorFlow;
@@ -14,7 +12,7 @@ public class Main {
 
             // Construct the computation graph with a single operation, a constant
             // named "MyConst" with a value "value".
-            try (Tensor t = Tensor.create(value.getBytes("UTF-8"))) {
+            try (Tensor<?> t = Tensor.create(value.getBytes("UTF-8"))) {
                 // The Java API doesn't yet include convenience functions for adding operations.
                 g.opBuilder("Const", "MyConst")
                     .setAttr("dtype", t.dataType())
@@ -26,7 +24,7 @@ public class Main {
             try (Session s = new Session(g);
                 // Generally, there may be multiple output tensors,
                 // all of them must be closed to prevent resource leaks.
-                Tensor output = s.runner()
+                Tensor<?> output = s.runner()
                     .fetch("MyConst")
                     .run()
                     .get(0)) {
